@@ -1,0 +1,58 @@
+-- 1. Create the StudentEnrollments table
+CREATE TABLE IF NOT EXISTS StudentEnrollments (
+    enrollment_id SERIAL PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    course_id VARCHAR(10) NOT NULL,
+    enrollment_date DATE NOT NULL,
+    CONSTRAINT unique_student_course UNIQUE (student_name, course_id)
+);
+
+-- 2. Insert initial records
+INSERT INTO StudentEnrollments (student_name, course_id, enrollment_date) VALUES
+('Smaran', 'CSE102', '2024-07-01'),
+('Vaibhav', 'CSE101', '2024-07-01');
+
+-- 3. First transaction: Insert a new student
+START TRANSACTION;
+INSERT INTO StudentEnrollments (student_name, course_id, enrollment_date)
+VALUES ('Ashish', 'CSE101', '2024-07-01');
+COMMIT;
+
+-- 4. Check data after first insert
+SELECT * FROM StudentEnrollments;
+
+-- 5. Update Ashish's enrollment date (first update)
+START TRANSACTION;
+SELECT * FROM StudentEnrollments
+WHERE student_name = 'Ashish' AND course_id = 'CSE101'
+FOR UPDATE;
+
+UPDATE StudentEnrollments
+SET enrollment_date = '2025-09-15'
+WHERE student_name = 'Ashish' AND course_id = 'CSE101';
+COMMIT;
+
+-- 6. Update Ashish's enrollment date (second update)
+START TRANSACTION;
+SELECT * FROM StudentEnrollments
+WHERE student_name = 'Ashish' AND course_id = 'CSE101'
+FOR UPDATE;
+
+UPDATE StudentEnrollments
+SET enrollment_date = '2025-10-01'
+WHERE student_name = 'Ashish' AND course_id = 'CSE101';
+COMMIT;
+
+-- 7. Update Ashish's enrollment date (third update)
+START TRANSACTION;
+SELECT * FROM StudentEnrollments
+WHERE student_name = 'Ashish' AND course_id = 'CSE101'
+FOR UPDATE;
+
+UPDATE StudentEnrollments
+SET enrollment_date = '2025-11-01'
+WHERE student_name = 'Ashish' AND course_id = 'CSE101';
+COMMIT;
+
+-- 8. Final check
+SELECT * FROM StudentEnrollments WHERE student_name = 'Ashish';
